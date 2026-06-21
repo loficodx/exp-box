@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  gap: 8px;
+}
+
+.label {
+  color: var(--text);
+}
+
+.status {
+  font-family: var(--mono);
+  color: var(--text-h);
+}
+
+.error {
+  color: #e53e3e;
+}
