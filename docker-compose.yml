@@ -15,10 +15,12 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    networks: [app_net]
 
   backend:
     build:
-      context: ./backend
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: exp-box-backend
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-exp_box}:${POSTGRES_PASSWORD:-exp_box_password}@postgres:5432/${POSTGRES_DB:-exp_box}
@@ -30,6 +32,7 @@ services:
       - "8000"
     ports:
       - "8000:8000"
+    networks: [app_net, targets_net]
 
   frontend:
     build:
@@ -39,6 +42,25 @@ services:
       - backend
     ports:
       - "80:80"
+    networks: [app_net]
+
+  room-rce:
+    build: ./rooms/rce
+    container_name: exp-box-room-rce
+    networks: [targets_net]
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 64
+    mem_limit: 128m
+    cpus: 0.5
+    restart: always
 
 volumes:
   postgres_data:
+
+networks:
+  app_net:
+  targets_net:
+    internal: true
