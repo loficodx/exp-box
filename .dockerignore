@@ -3,4 +3,11 @@
 **/target
 **/node_modules
 **/dist
+**/.cache
+**/.vite
+**/.tmp
+.env
+.env.*
+*.log
 .DS_Store
+Thumbs.db
