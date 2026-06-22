@@ -70,6 +70,16 @@ Thumbs.db
 *.sw?
 
 # -----------------------------
+# SQLite runtime database files
+# -----------------------------
+data/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# -----------------------------
 # Agent-local files
 # -----------------------------
 .claude/settings.local.json

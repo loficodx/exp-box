@@ -1,37 +1,18 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: exp-box-postgres
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-exp_box}
-      POSTGRES_USER: ${POSTGRES_USER:-exp_box}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-exp_box_password}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    networks: [app_net]
-
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
     container_name: exp-box-backend
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER:-exp_box}:${POSTGRES_PASSWORD:-exp_box_password}@postgres:5432/${POSTGRES_DB:-exp_box}
+      DATABASE_URL: sqlite://data/exp-box.db
       RUST_LOG: ${RUST_LOG:-info}
-    depends_on:
-      postgres:
-        condition: service_healthy
     expose:
       - "8000"
     ports:
       - "8000:8000"
+    volumes:
+      - sqlite_data:/app/data
     networks: [app_net, targets_net]
 
   frontend:
@@ -58,7 +39,7 @@ services:
     restart: always
 
 volumes:
-  postgres_data:
+  sqlite_data:
 
 networks:
   app_net:

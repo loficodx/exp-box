@@ -1,69 +1,21 @@
-use axum::{
-    Json, Router,
-    routing::{get, post},
-};
-use serde::Serialize;
-use sqlx::PgPool;
-use tower_http::cors::{Any, CorsLayer};
+use anyhow::Result;
 
-mod proxy;
-mod rooms;
+mod api;
+mod app;
+mod db;
+mod state;
 
-#[derive(Clone)]
-pub struct AppState {
-    pub pool: PgPool,
-    pub http: reqwest::Client,
-}
-
-#[derive(Serialize)]
-struct HealthResponse {
-    message: &'static str,
-}
-
-async fn health() -> Json<HealthResponse> {
-    Json(HealthResponse {
-        message: "exp-box ready",
-    })
-}
-
-//docker compose up -d postgres
-const DEFAULT_DATABASE_URL: &str = "postgres://exp_box:exp_box_password@127.0.0.1:5432/exp_box";
 #[tokio::main]
-async fn main() {
-    let database_url =
-        std::env::var("DATABASE_URL").unwrap_or_else(|_| DEFAULT_DATABASE_URL.to_string());
-    let pool = PgPool::connect(&database_url)
-        .await
-        .expect("failed to connect to database");
+async fn main() -> Result<()> {
+    let pool = db::init_pool().await?;
+    let state = state::AppState::new(pool);
+    let app = app::build_app(state)?;
 
-    sqlx::migrate!("../migrations")
-        .run(&pool)
-        .await
-        .expect("failed to run migrations");
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await?;
 
-    let state = AppState {
-        pool,
-        http: reqwest::Client::new(),
-    };
-
-    let cors = CorsLayer::new()
-        .allow_origin(
-            "http://localhost"
-                .parse::<axum::http::HeaderValue>()
-                .unwrap(),
-        )
-        .allow_methods(Any)
-        .allow_headers(Any);
-
-    let app = Router::new()
-        .route("/api/health", get(health))
-        .route("/api/rooms", get(rooms::list_rooms))
-        .route("/api/rooms/rce/exec", post(proxy::exec))
-        .route("/api/rooms/rce/submit", post(proxy::submit))
-        .layer(cors)
-        .with_state(state);
-
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
     println!("Listening on http://0.0.0.0:8000");
-    axum::serve(listener, app).await.unwrap();
+
+    axum::serve(listener, app).await?;
+
+    Ok(())
 }

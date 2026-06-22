@@ -15,15 +15,24 @@ export function RoomRce({ onBack }: Props) {
 
   async function runCmd() {
     if (!cmd.trim()) return
+
     setRunning(true)
     setOutput(null)
+
     try {
       const res = await fetch('/api/rooms/rce/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cmd }),
       })
-      const data: { stdout: string; stderr: string } = await res.json()
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setOutput(data.message ?? data.error ?? `Error: HTTP ${res.status}`)
+        return
+      }
+
       setOutput((data.stdout || '') + (data.stderr ? '\n[stderr]\n' + data.stderr : ''))
     } catch {
       setOutput('Error: could not reach backend')
@@ -34,15 +43,25 @@ export function RoomRce({ onBack }: Props) {
 
   async function submitFlag() {
     if (!flag.trim()) return
+
     setSubmitting(true)
     setSubmitResult(null)
+
     try {
       const res = await fetch('/api/rooms/rce/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ flag }),
       })
-      const data: { correct: boolean } = await res.json()
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        console.error(data.message ?? data.error ?? `Submit failed: HTTP ${res.status}`)
+        setSubmitResult(false)
+        return
+      }
+
       setSubmitResult(data.correct)
     } catch {
       setSubmitResult(false)

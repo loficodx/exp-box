@@ -1,18 +1,18 @@
 CREATE TABLE IF NOT EXISTS rooms (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   slug TEXT UNIQUE NOT NULL,
   title TEXT NOT NULL,
   category TEXT NOT NULL,
   difficulty TEXT NOT NULL,
-  position INT NOT NULL,
+  position INTEGER NOT NULL,
   description TEXT NOT NULL,
   flag_hash TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS progress (
   session_id TEXT NOT NULL,
-  room_id INT NOT NULL REFERENCES rooms(id),
-  solved_at TIMESTAMPTZ,
+  room_id INTEGER NOT NULL REFERENCES rooms(id),
+  solved_at TEXT,
   PRIMARY KEY (session_id, room_id)
 );
 
