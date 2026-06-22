@@ -26,11 +26,11 @@ pub struct RoomResponse {
     solved: bool,
 }
 
-pub async fn list_rooms(
-    State(state): State<AppState>,
-    jar: CookieJar,
-) -> Json<Vec<RoomResponse>> {
-    let sid = jar.get("sid").map(|c| c.value().to_string()).unwrap_or_default();
+pub async fn list_rooms(State(state): State<AppState>, jar: CookieJar) -> Json<Vec<RoomResponse>> {
+    let sid = jar
+        .get("sid")
+        .map(|c| c.value().to_string())
+        .unwrap_or_default();
 
     let rows: Vec<RoomRow> = sqlx::query_as(
         "SELECT r.slug, r.title, r.category, r.difficulty, r.position, r.description,

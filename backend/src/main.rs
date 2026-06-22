@@ -1,4 +1,7 @@
-use axum::{Json, Router, routing::{get, post}};
+use axum::{
+    Json, Router,
+    routing::{get, post},
+};
 use serde::Serialize;
 use sqlx::PgPool;
 use tower_http::cors::{Any, CorsLayer};
@@ -18,15 +21,25 @@ struct HealthResponse {
 }
 
 async fn health() -> Json<HealthResponse> {
-    Json(HealthResponse { message: "exp-box ready" })
+    Json(HealthResponse {
+        message: "exp-box ready",
+    })
 }
 
+//docker compose up -d postgres
+const DEFAULT_DATABASE_URL: &str = "postgres://exp_box:exp_box_password@127.0.0.1:5432/exp_box";
 #[tokio::main]
 async fn main() {
-    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let pool = PgPool::connect(&database_url).await.expect("failed to connect to database");
+    let database_url =
+        std::env::var("DATABASE_URL").unwrap_or_else(|_| DEFAULT_DATABASE_URL.to_string());
+    let pool = PgPool::connect(&database_url)
+        .await
+        .expect("failed to connect to database");
 
-    sqlx::migrate!("../migrations").run(&pool).await.expect("failed to run migrations");
+    sqlx::migrate!("../migrations")
+        .run(&pool)
+        .await
+        .expect("failed to run migrations");
 
     let state = AppState {
         pool,
@@ -34,7 +47,11 @@ async fn main() {
     };
 
     let cors = CorsLayer::new()
-        .allow_origin("http://localhost".parse::<axum::http::HeaderValue>().unwrap())
+        .allow_origin(
+            "http://localhost"
+                .parse::<axum::http::HeaderValue>()
+                .unwrap(),
+        )
         .allow_methods(Any)
         .allow_headers(Any);
 
