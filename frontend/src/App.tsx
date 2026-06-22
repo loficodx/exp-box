@@ -1,37 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './App.css'
+import { Rooms } from './Rooms'
+import { RoomRce } from './RoomRce'
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+type View = 'rooms' | 'rce'
 
 function App() {
-  const [message, setMessage] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [view, setView] = useState<View>('rooms')
 
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/api/health`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Backend returned an error')
-        return res.json()
-      })
-      .then((data: { message: string }) => {
-        setMessage(data.message)
-        setLoading(false)
-      })
-      .catch(() => {
-        setError('Backend is not available')
-        setLoading(false)
-      })
-  }, [])
+  if (view === 'rce') {
+    return <RoomRce onBack={() => setView('rooms')} />
+  }
 
   return (
-    <div className="container">
-      <h1>exp-box</h1>
-      <p className="label">Backend status:</p>
-      {loading && <p className="status">Loading…</p>}
-      {error && <p className="status error">{error}</p>}
-      {message && <p className="status">{message}</p>}
-    </div>
+    <Rooms
+      onSelectRoom={(slug) => {
+        if (slug === 'rce') setView('rce')
+      }}
+    />
   )
 }
 
