@@ -14,14 +14,14 @@ async fn health() -> Json<HealthResponse> {
 #[tokio::main]
 async fn main() {
     let cors = CorsLayer::new()
-        .allow_origin("http://localhost:5173".parse::<axum::http::HeaderValue>().unwrap())
+        .allow_origin("http://localhost".parse::<axum::http::HeaderValue>().unwrap())
         .allow_methods(Any);
 
     let app = Router::new()
         .route("/api/health", get(health))
         .layer(cors);
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:8000").await.unwrap();
-    println!("Listening on http://127.0.0.1:8000");
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
+    println!("Listening on http://0.0.0.0:8000");
     axum::serve(listener, app).await.unwrap();
 }
