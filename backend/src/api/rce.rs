@@ -34,7 +34,7 @@ pub async fn exec(
         })?;
 
     let status = resp.status();
-    
+
     let text = resp.text().await.map_err(|err| {
         ApiError::bad_gateway(
             "room_response_read_failed",
@@ -90,15 +90,15 @@ pub async fn submit(
              SELECT ?1, id, CURRENT_TIMESTAMP FROM rooms WHERE slug = 'rce'
              ON CONFLICT(session_id, room_id) DO UPDATE SET solved_at = CURRENT_TIMESTAMP",
         )
-            .bind(&sid)
-            .execute(&state.pool)
-            .await
-            .map_err(|err| {
-                ApiError::internal(
-                    "progress_update_failed",
-                    format!("failed to update RCE progress: {err}"),
-                )
-            })?;
+        .bind(&sid)
+        .execute(&state.pool)
+        .await
+        .map_err(|err| {
+            ApiError::internal(
+                "progress_update_failed",
+                format!("failed to update RCE progress: {err}"),
+            )
+        })?;
     }
 
     let jar = jar.add(Cookie::new("sid", sid));

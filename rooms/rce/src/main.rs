@@ -15,7 +15,12 @@ struct ExecResponse {
 
 // INTENTIONALLY VULNERABLE — training target
 async fn exec(Json(payload): Json<ExecRequest>) -> Json<ExecResponse> {
-    match Command::new("sh").arg("-c").arg(&payload.cmd).output().await {
+    match Command::new("sh")
+        .arg("-c")
+        .arg(&payload.cmd)
+        .output()
+        .await
+    {
         Ok(output) => Json(ExecResponse {
             stdout: String::from_utf8_lossy(&output.stdout).into_owned(),
             stderr: String::from_utf8_lossy(&output.stderr).into_owned(),

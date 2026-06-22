@@ -64,15 +64,12 @@ pub async fn list_rooms(
             AND p.session_id = ?1
          ORDER BY r.position",
     )
-        .bind(&sid)
-        .fetch_all(&state.pool)
-        .await
-        .map_err(|err| {
-            ApiError::internal(
-                "rooms_query_failed",
-                format!("failed to load rooms: {err}"),
-            )
-        })?;
+    .bind(&sid)
+    .fetch_all(&state.pool)
+    .await
+    .map_err(|err| {
+        ApiError::internal("rooms_query_failed", format!("failed to load rooms: {err}"))
+    })?;
 
     let rooms = rows.into_iter().map(RoomResponse::from).collect();
 

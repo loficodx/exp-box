@@ -28,15 +28,16 @@ services:
   room-rce:
     build: ./rooms/rce
     container_name: exp-box-room-rce
-    networks: [targets_net]
+    networks: [ targets_net ]
     read_only: true
-    tmpfs: ["/tmp"]
-    cap_drop: ["ALL"]
-    security_opt: ["no-new-privileges:true"]
+    tmpfs: [ "/tmp" ]
+    cap_drop: [ "ALL" ]
+    security_opt: [ "no-new-privileges:true" ]
     pids_limit: 64
     mem_limit: 128m
     cpus: 0.5
-    restart: always
+    init: true
+    restart: unless-stopped
 
 volumes:
   sqlite_data:
