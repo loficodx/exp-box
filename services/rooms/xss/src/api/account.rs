@@ -1,5 +1,6 @@
 use axum::{Json, extract::State, http::HeaderMap};
 use serde::{Deserialize, Serialize};
+use serde_json::{Value, json};
 
 use crate::{api::comments::header_str, error::ApiError, state::AppState};
 
@@ -53,4 +54,26 @@ pub async fn change_password(
     .map_err(|e| ApiError::internal("account_fetch_failed", e.to_string()))?;
 
     Ok(Json(account))
+}
+
+pub async fn reset(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Json<Value>, ApiError> {
+    let user_id = header_str(&headers, "x-lab-user-id")
+        .ok_or_else(|| ApiError::unauthorized("missing_identity", "X-Lab-User-Id header is required"))?;
+
+    sqlx::query("DELETE FROM comments WHERE user_id = ?1")
+        .bind(&user_id)
+        .execute(&state.pool)
+        .await
+        .map_err(|e| ApiError::internal("reset_comments_failed", e.to_string()))?;
+
+    sqlx::query("DELETE FROM room_accounts WHERE user_id = ?1")
+        .bind(&user_id)
+        .execute(&state.pool)
+        .await
+        .map_err(|e| ApiError::internal("reset_account_failed", e.to_string()))?;
+
+    Ok(Json(json!({"message": "room state reset"})))
 }

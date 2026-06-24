@@ -108,3 +108,12 @@ pub async fn change_password(
 ) -> Result<Response, ApiError> {
     proxy_authed_post(&state, &user, &slug, "change-password", &headers, body).await
 }
+
+pub async fn reset(
+    State(state): State<AppState>,
+    Path(slug): Path<String>,
+    user: AuthUser,
+    headers: HeaderMap,
+) -> Result<Response, ApiError> {
+    proxy_authed_post(&state, &user, &slug, "reset", &headers, Bytes::new()).await
+}

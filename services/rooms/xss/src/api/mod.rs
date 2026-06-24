@@ -17,4 +17,5 @@ pub fn router() -> Router<AppState> {
         .route("/comments", get(comments::list_comments))
         .route("/comments", post(comments::post_comment))
         .route("/change-password", post(account::change_password))
+        .route("/reset", post(account::reset))
 }

@@ -20,6 +20,7 @@ pub fn router() -> Router<AppState> {
         .route("/rooms/{slug}/post", get(xss::get_post))
         .route("/rooms/{slug}/comments", get(xss::get_comments).post(xss::post_comment))
         .route("/rooms/{slug}/change-password", post(xss::change_password))
+        .route("/rooms/{slug}/reset", post(xss::reset))
         .route("/rooms/{slug}/actions/{action}", post(rce::action))
         .route("/rooms/{slug}/submit", post(rce::submit_by_slug))
         .route("/auth/register", post(auth::register))
