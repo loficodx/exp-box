@@ -39,7 +39,7 @@ services:
       - app_net
 
   room-rce:
-    build: ./rooms/rce
+    build: ./services/rooms/rce
     container_name: exp-box-room-rce
     networks: [ targets_net ]
     read_only: true
