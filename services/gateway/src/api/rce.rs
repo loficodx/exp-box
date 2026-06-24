@@ -7,8 +7,6 @@ use sha2::{Digest, Sha256};
 
 use crate::{api::error::ApiError, auth::AuthUser, room_registry::RoomTarget, state::AppState};
 
-const RCE_SLUG: &str = "rce";
-
 #[derive(Deserialize)]
 pub struct SubmitRequest {
     flag: String,
@@ -23,14 +21,6 @@ pub struct SubmitResponse {
 struct RoomFlag {
     id: i64,
     flag_hash: String,
-}
-
-// INTENTIONALLY VULNERABLE — training target: forwards cmd verbatim, no inspection
-pub async fn exec(
-    State(state): State<AppState>,
-    body: Json<serde_json::Value>,
-) -> Result<Json<serde_json::Value>, ApiError> {
-    proxy_action(&state, RCE_SLUG, "exec", body).await
 }
 
 pub async fn action(
@@ -108,14 +98,6 @@ fn room_target(
             format!("room target is not configured for slug {slug}"),
         )
     })
-}
-
-pub async fn submit(
-    State(state): State<AppState>,
-    user: AuthUser,
-    Json(body): Json<SubmitRequest>,
-) -> Result<Json<SubmitResponse>, ApiError> {
-    submit_for_slug(&state, &user, RCE_SLUG, body).await
 }
 
 pub async fn submit_by_slug(
