@@ -1,22 +1,21 @@
-use axum::{Json, Router, routing::get};
-use serde::Serialize;
+use anyhow::Result;
 
-#[derive(Serialize)]
-struct HealthResponse {
-    message: &'static str,
-}
-
-async fn health() -> Json<HealthResponse> {
-    Json(HealthResponse {
-        message: "room-xss ready",
-    })
-}
+mod api;
+mod app;
+mod db;
+mod error;
+mod state;
 
 #[tokio::main]
-async fn main() {
-    let app = Router::new().route("/health", get(health));
+async fn main() -> Result<()> {
+    let state = state::AppState::new();
+    let app = app::build_app(state)?;
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:9000").await.unwrap();
-    println!("xss placeholder listening on http://0.0.0.0:9000");
-    axum::serve(listener, app).await.unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:9000").await?;
+
+    println!("room-xss listening on http://0.0.0.0:9000");
+
+    axum::serve(listener, app).await?;
+
+    Ok(())
 }
