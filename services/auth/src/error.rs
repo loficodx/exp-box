@@ -67,9 +67,7 @@ impl IntoResponse for ApiError {
             ApiError::Internal { error, message } => {
                 (StatusCode::INTERNAL_SERVER_ERROR, error, message)
             }
-            ApiError::Unauthorized { error, message } => {
-                (StatusCode::UNAUTHORIZED, error, message)
-            }
+            ApiError::Unauthorized { error, message } => (StatusCode::UNAUTHORIZED, error, message),
             ApiError::Conflict { error, message } => (StatusCode::CONFLICT, error, message),
             ApiError::BadRequest { error, message } => (StatusCode::BAD_REQUEST, error, message),
         };
