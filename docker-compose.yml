@@ -25,6 +25,14 @@ services:
       - "80:80"
     networks: [app_net]
 
+  auth-service:
+    build: ./services/auth
+    container_name: exp-box-auth-service
+    expose:
+      - "9001"
+    networks:
+      - app_net
+
   room-rce:
     build: ./rooms/rce
     container_name: exp-box-room-rce
