@@ -18,6 +18,7 @@ pub fn router() -> Router<AppState> {
         .route("/rooms", get(rooms::list_rooms))
         .route("/rooms/rce/exec", post(rce::exec))
         .route("/rooms/rce/submit", post(rce::submit))
+        .route("/rooms/{slug}/submit", post(rce::submit_by_slug))
         .route("/auth/register", post(auth::register))
         .route("/auth/login", post(auth::login))
         .route("/auth/logout", post(auth::logout))
