@@ -17,7 +17,7 @@ pub async fn init_pool() -> Result<SqlitePool> {
         .await
         .context("failed to connect to SQLite database")?;
 
-    sqlx::migrate!("../migrations")
+    sqlx::migrate!("../../migrations")
         .run(&pool)
         .await
         .context("failed to run database migrations")?;

@@ -1,9 +1,9 @@
 services:
-  backend:
+  gateway:
     build:
       context: .
-      dockerfile: backend/Dockerfile
-    container_name: exp-box-backend
+      dockerfile: services/gateway/Dockerfile
+    container_name: exp-box-gateway
     environment:
       DATABASE_URL: sqlite://data/exp-box.db
       RUST_LOG: ${RUST_LOG:-info}
@@ -21,7 +21,7 @@ services:
       context: ./frontend
     container_name: exp-box-frontend
     depends_on:
-      - backend
+      - gateway
     ports:
       - "80:80"
     networks: [app_net]

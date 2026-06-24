@@ -1,10 +1,11 @@
 # Docker setup for exp-box
 
-This project runs three services:
+This project runs four services:
 
 - `frontend` — Vite/React app served by nginx on `http://localhost`
-- `backend` — Rust/Axum API on `http://localhost:8000`
-- `postgres` — PostgreSQL database on `localhost:5432`
+- `gateway` — Rust/Axum API on `http://localhost:8000`
+- `auth-service` — internal Rust/Axum auth API
+- `room-rce` — internal vulnerable RCE room service
 
 ## Start
 
@@ -20,10 +21,10 @@ Open:
 http://localhost
 ```
 
-The frontend calls the backend through nginx:
+The frontend calls the gateway through nginx:
 
 ```text
-/api/health -> backend:8000/api/health
+/api/health -> gateway:8000/api/health
 ```
 
 ## Useful commands
@@ -43,10 +44,10 @@ docker compose up
 
 ## Database connection inside Docker
 
-The backend receives this environment variable:
+The gateway receives this environment variable:
 
 ```text
-DATABASE_URL=postgres://exp_box:exp_box_password@postgres:5432/exp_box
+DATABASE_URL=sqlite://data/exp-box.db
 ```
 
-At the moment the backend does not use PostgreSQL yet, but the database service is ready for the next step.
+The auth service uses its own SQLite database volume.

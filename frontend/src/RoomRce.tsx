@@ -35,7 +35,7 @@ export function RoomRce({ onBack }: Props) {
 
       setOutput((data.stdout || '') + (data.stderr ? '\n[stderr]\n' + data.stderr : ''))
     } catch {
-      setOutput('Error: could not reach backend')
+      setOutput('Error: could not reach gateway')
     } finally {
       setRunning(false)
     }
