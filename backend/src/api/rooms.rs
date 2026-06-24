@@ -1,8 +1,7 @@
-use axum::{Json, extract::State};
-use axum_extra::extract::CookieJar;
+use axum::{Json, extract::State, http::HeaderMap};
 use serde::Serialize;
 
-use crate::{api::error::ApiError, state::AppState};
+use crate::{api::error::ApiError, auth, state::AppState};
 
 #[derive(sqlx::FromRow)]
 struct RoomRow {
@@ -42,11 +41,12 @@ impl From<RoomRow> for RoomResponse {
 
 pub async fn list_rooms(
     State(state): State<AppState>,
-    jar: CookieJar,
+    headers: HeaderMap,
 ) -> Result<Json<Vec<RoomResponse>>, ApiError> {
-    let sid = jar
-        .get("sid")
-        .map(|cookie| cookie.value().to_string())
+    // Authentication is optional: unauthenticated users see rooms but solved is always false.
+    let user_id = auth::try_authenticate(&state, &headers)
+        .await
+        .map(|u| u.user_id)
         .unwrap_or_default();
 
     let rows: Vec<RoomRow> = sqlx::query_as(
@@ -61,10 +61,10 @@ pub async fn list_rooms(
          FROM rooms r
          LEFT JOIN progress p
             ON p.room_id = r.id
-            AND p.session_id = ?1
+            AND p.user_id = ?1
          ORDER BY r.position",
     )
-    .bind(&sid)
+    .bind(&user_id)
     .fetch_all(&state.pool)
     .await
     .map_err(|err| {

@@ -1,9 +1,8 @@
 use axum::{Json, extract::State};
-use axum_extra::extract::{CookieJar, cookie::Cookie};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
-use crate::{api::error::ApiError, state::AppState};
+use crate::{api::error::ApiError, auth::AuthUser, state::AppState};
 
 #[derive(Deserialize)]
 pub struct SubmitRequest {
@@ -61,9 +60,9 @@ pub async fn exec(
 
 pub async fn submit(
     State(state): State<AppState>,
-    jar: CookieJar,
+    user: AuthUser,
     Json(body): Json<SubmitRequest>,
-) -> Result<(CookieJar, Json<SubmitResponse>), ApiError> {
+) -> Result<Json<SubmitResponse>, ApiError> {
     let hash = hex::encode(Sha256::digest(body.flag.trim().as_bytes()));
 
     let flag_hash: Option<String> =
@@ -79,18 +78,13 @@ pub async fn submit(
 
     let correct = flag_hash.is_some_and(|h| h == hash);
 
-    let sid = jar
-        .get("sid")
-        .map(|cookie| cookie.value().to_string())
-        .unwrap_or_else(|| uuid::Uuid::new_v4().to_string());
-
     if correct {
         sqlx::query(
-            "INSERT INTO progress (session_id, room_id, solved_at)
+            "INSERT INTO progress (user_id, room_id, solved_at)
              SELECT ?1, id, CURRENT_TIMESTAMP FROM rooms WHERE slug = 'rce'
-             ON CONFLICT(session_id, room_id) DO UPDATE SET solved_at = CURRENT_TIMESTAMP",
+             ON CONFLICT(user_id, room_id) DO UPDATE SET solved_at = CURRENT_TIMESTAMP",
         )
-        .bind(&sid)
+        .bind(&user.user_id)
         .execute(&state.pool)
         .await
         .map_err(|err| {
@@ -101,7 +95,5 @@ pub async fn submit(
         })?;
     }
 
-    let jar = jar.add(Cookie::new("sid", sid));
-
-    Ok((jar, Json(SubmitResponse { correct })))
+    Ok(Json(SubmitResponse { correct }))
 }

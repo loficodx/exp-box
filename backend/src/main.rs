@@ -2,6 +2,7 @@ use anyhow::Result;
 
 mod api;
 mod app;
+mod auth;
 mod db;
 mod state;
 
