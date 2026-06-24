@@ -4,6 +4,7 @@ mod api;
 mod app;
 mod auth;
 mod db;
+mod room_registry;
 mod state;
 
 #[tokio::main]

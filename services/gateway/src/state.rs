@@ -1,10 +1,13 @@
 use sqlx::SqlitePool;
 
+use crate::room_registry::RoomRegistry;
+
 #[derive(Clone)]
 pub struct AppState {
     pub pool: SqlitePool,
     pub http: reqwest::Client,
     pub auth_service_url: String,
+    pub rooms: RoomRegistry,
 }
 
 impl AppState {
@@ -15,6 +18,7 @@ impl AppState {
             pool,
             http: reqwest::Client::new(),
             auth_service_url,
+            rooms: RoomRegistry::default(),
         }
     }
 }
