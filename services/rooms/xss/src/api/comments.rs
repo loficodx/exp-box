@@ -72,7 +72,7 @@ pub async fn post_comment(
     Ok(Json(comment))
 }
 
-fn header_str(headers: &HeaderMap, name: &str) -> Option<String> {
+pub fn header_str(headers: &HeaderMap, name: &str) -> Option<String> {
     headers
         .get(name)
         .and_then(|v| v.to_str().ok())

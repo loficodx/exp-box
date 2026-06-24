@@ -32,7 +32,7 @@ impl RoomRegistry {
                 RoomTarget {
                     slug: "xss",
                     base_url: "http://room-xss:9000",
-                    actions: &["post", "comments"],
+                    actions: &["post", "comments", "change-password"],
                 },
             ],
         }
