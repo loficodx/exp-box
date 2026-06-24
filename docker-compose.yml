@@ -28,8 +28,12 @@ services:
   auth-service:
     build: ./services/auth
     container_name: exp-box-auth-service
+    environment:
+      AUTH_DATABASE_URL: sqlite://data/auth.db
     expose:
       - "9001"
+    volumes:
+      - auth_data:/app/data
     networks:
       - app_net
 
@@ -49,6 +53,7 @@ services:
 
 volumes:
   sqlite_data:
+  auth_data:
 
 networks:
   app_net:
