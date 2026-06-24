@@ -52,6 +52,14 @@ services:
     init: true
     restart: unless-stopped
 
+  room-xss:
+    build: ./services/rooms/xss
+    container_name: exp-box-room-xss
+    expose:
+      - "9000"
+    networks:
+      - targets_net
+
 volumes:
   sqlite_data:
   auth_data:
