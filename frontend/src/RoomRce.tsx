@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { roomActionUrl, roomSubmitUrl } from './api'
 
 interface Props {
   onBack: () => void
@@ -20,7 +21,7 @@ export function RoomRce({ onBack }: Props) {
     setOutput(null)
 
     try {
-      const res = await fetch('/api/rooms/rce/exec', {
+      const res = await fetch(roomActionUrl('rce', 'exec'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cmd }),
@@ -48,7 +49,7 @@ export function RoomRce({ onBack }: Props) {
     setSubmitResult(null)
 
     try {
-      const res = await fetch('/api/rooms/rce/submit', {
+      const res = await fetch(roomSubmitUrl('rce'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ flag }),
