@@ -2,6 +2,7 @@
 pub struct RoomTarget {
     pub slug: &'static str,
     pub base_url: &'static str,
+    pub actions: &'static [&'static str],
 }
 
 impl RoomTarget {
@@ -26,9 +27,10 @@ impl RoomRegistry {
                 RoomTarget {
                     slug: "rce",
                     base_url: "http://room-rce:9000",
+                    actions: &["exec"],
                 },
                 // Add future rooms here, for example:
-                // RoomTarget { slug: "xss", base_url: "http://room-xss:9000" },
+                // RoomTarget { slug: "xss", base_url: "http://room-xss:9000", actions: &["..."] },
             ],
         }
     }
