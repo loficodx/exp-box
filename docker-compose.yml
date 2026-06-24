@@ -55,14 +55,19 @@ services:
   room-xss:
     build: ./services/rooms/xss
     container_name: exp-box-room-xss
+    environment:
+      XSS_DATABASE_URL: sqlite://data/xss.db
     expose:
       - "9000"
+    volumes:
+      - xss_data:/app/data
     networks:
       - targets_net
 
 volumes:
   sqlite_data:
   auth_data:
+  xss_data:
 
 networks:
   app_net:

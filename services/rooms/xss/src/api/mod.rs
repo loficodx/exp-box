@@ -1,4 +1,7 @@
-use axum::{Router, routing::get};
+use axum::{
+    Router,
+    routing::{get, post},
+};
 
 use crate::state::AppState;
 
@@ -11,4 +14,6 @@ pub fn router() -> Router<AppState> {
     Router::new()
         .route("/health", get(health::health))
         .route("/post", get(post::get_post))
+        .route("/comments", get(comments::list_comments))
+        .route("/comments", post(comments::post_comment))
 }

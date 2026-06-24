@@ -29,8 +29,11 @@ impl RoomRegistry {
                     base_url: "http://room-rce:9000",
                     actions: &["exec"],
                 },
-                // Add future rooms here, for example:
-                // RoomTarget { slug: "xss", base_url: "http://room-xss:9000", actions: &["..."] },
+                RoomTarget {
+                    slug: "xss",
+                    base_url: "http://room-xss:9000",
+                    actions: &["post", "comments"],
+                },
             ],
         }
     }

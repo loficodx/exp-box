@@ -8,7 +8,8 @@ mod state;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let state = state::AppState::new();
+    let pool = db::init_pool().await?;
+    let state = state::AppState::new(pool);
     let app = app::build_app(state)?;
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:9000").await?;

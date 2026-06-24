@@ -11,6 +11,10 @@ pub enum ApiError {
         error: &'static str,
         message: String,
     },
+    Unauthorized {
+        error: &'static str,
+        message: String,
+    },
     BadRequest {
         error: &'static str,
         message: String,
@@ -31,6 +35,13 @@ impl ApiError {
         }
     }
 
+    pub fn unauthorized(error: &'static str, message: impl Into<String>) -> Self {
+        Self::Unauthorized {
+            error,
+            message: message.into(),
+        }
+    }
+
     pub fn bad_request(error: &'static str, message: impl Into<String>) -> Self {
         Self::BadRequest {
             error,
@@ -44,6 +55,9 @@ impl IntoResponse for ApiError {
         let (status, error, message) = match self {
             ApiError::Internal { error, message } => {
                 (StatusCode::INTERNAL_SERVER_ERROR, error, message)
+            }
+            ApiError::Unauthorized { error, message } => {
+                (StatusCode::UNAUTHORIZED, error, message)
             }
             ApiError::BadRequest { error, message } => (StatusCode::BAD_REQUEST, error, message),
         };
