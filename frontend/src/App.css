@@ -190,3 +190,122 @@
 .submit-result.wrong {
   color: #e53e3e;
 }
+
+/* Navbar */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 52px;
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 20%, transparent);
+}
+
+.navbar-brand {
+  font-weight: 600;
+  color: var(--text-h);
+  letter-spacing: -0.5px;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-user {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.nav-btn {
+  background: none;
+  border: 1px solid color-mix(in srgb, var(--text) 30%, transparent);
+  border-radius: 6px;
+  color: var(--text-h);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  padding: 5px 14px;
+}
+
+.nav-btn:hover {
+  border-color: var(--text);
+}
+
+.nav-btn.nav-btn-primary {
+  background: var(--text-h);
+  border-color: var(--text-h);
+  color: var(--bg);
+}
+
+.nav-btn.nav-btn-primary:hover {
+  opacity: 0.85;
+}
+
+/* Auth pages */
+
+.auth-page {
+  max-width: 380px;
+  margin: 64px auto 80px;
+  padding: 0 24px;
+}
+
+.auth-page h1 {
+  font-size: 32px;
+  margin-bottom: 32px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.auth-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.auth-input {
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 9px 12px;
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 25%, transparent);
+  border-radius: 6px;
+  color: var(--text-h);
+  outline: none;
+}
+
+.auth-input:focus {
+  border-color: var(--text);
+}
+
+.auth-error {
+  color: #e53e3e;
+  font-size: 0.875rem;
+  font-family: var(--mono);
+}
+
+.auth-switch {
+  margin-top: 20px;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--text-h);
+  cursor: pointer;
+  font: inherit;
+  font-size: inherit;
+  padding: 0;
+  text-decoration: underline;
+}

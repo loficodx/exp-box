@@ -37,7 +37,6 @@ export function Rooms({ onSelectRoom }: Props) {
 
   return (
     <div className="page">
-      <h1>exp-box</h1>
       <p className="label">Training rooms</p>
       {loading && <p className="status">Loading…</p>}
       {error && <p className="status error">{error}</p>}
