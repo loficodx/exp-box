@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends libsqlite3-dev 
 WORKDIR /app/services/gateway
 
 COPY services/gateway/Cargo.toml services/gateway/Cargo.lock ./
+COPY services/gateway/build.rs ./build.rs
 COPY services/gateway/src ./src
 COPY services/gateway/migrations ./migrations
 
