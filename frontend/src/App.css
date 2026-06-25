@@ -245,6 +245,43 @@
   opacity: 0.85;
 }
 
+/* XSS/CSRF room */
+
+.xss-comments {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.xss-comment {
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+
+.xss-comment-author {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.xss-comment-body {
+  font-size: 0.9rem;
+  color: var(--text-h);
+  display: block;
+}
+
+.xss-info {
+  font-size: 0.875rem;
+  color: var(--text);
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+
 /* Auth pages */
 
 .auth-page {

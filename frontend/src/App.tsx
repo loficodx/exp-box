@@ -6,8 +6,9 @@ import { Login } from './Login'
 import { Register } from './Register'
 import { Rooms } from './Rooms'
 import { RoomRce } from './RoomRce'
+import { RoomXss } from './RoomXss'
 
-type View = 'rooms' | 'rce' | 'login' | 'register'
+type View = 'rooms' | 'rce' | 'xss' | 'login' | 'register'
 
 function App() {
   const [view, setView] = useState<View>('rooms')
@@ -51,11 +52,20 @@ function App() {
     )
   } else if (view === 'rce') {
     content = <RoomRce onBack={() => setView('rooms')} />
+  } else if (view === 'xss') {
+    content = (
+      <RoomXss
+        user={user}
+        onBack={() => setView('rooms')}
+        onLogin={() => setView('login')}
+      />
+    )
   } else {
     content = (
       <Rooms
         onSelectRoom={(slug) => {
           if (slug === 'rce') setView('rce')
+          else if (slug === 'xss') setView('xss')
         }}
       />
     )
